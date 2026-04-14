@@ -1,554 +1,607 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Khanbogd Hub: Logistics & Mining</title>
-    
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Leaflet CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
-    
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <!-- Markdown Parser (marked) -->
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-
-    <style>
-        #map {
-            height: 100vh;
-            width: 100%;
-            z-index: 1;
-        }
-        
-        .sidebar-scroll::-webkit-scrollbar {
-            width: 6px;
-        }
-        .sidebar-scroll::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-        .sidebar-scroll::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 3px;
-        }
-        .sidebar-scroll::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
-        }
-
-        .sidebar-overlay {
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 40;
-        }
-
-        /* Loading Spinner */
-        .loader {
-            border: 3px solid #f3f3f3;
-            border-radius: 50%;
-            border-top: 3px solid #3b82f6;
-            width: 20px;
-            height: 20px;
-            -webkit-animation: spin 1s linear infinite;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Markdown Styles */
-        .prose h1 { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem; }
-        .prose h2 { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; margin-top: 1rem; }
-        .prose p { margin-bottom: 0.5rem; font-size: 0.9rem; line-height: 1.5; }
-        .prose ul { list-style-type: disc; padding-left: 1.25rem; margin-bottom: 0.5rem; }
-        .prose li { margin-bottom: 0.25rem; }
-        .prose strong { color: #1e3a8a; }
-    </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>3-Qubit Quantum Computer — World Quantum Day 2026</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=Inter:wght@400;500;600;700;800&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{
+    --bg:#07070d;--surface:#11111c;--surface2:#171724;--border:rgba(255,255,255,.08);
+    --text:#f4f4fb;--muted:rgba(255,255,255,.58);--dim:rgba(255,255,255,.34);
+    --accent:#8b5cf6;--accent2:#22d3ee;--warn:#facc15;--danger:#fb7185;
+    --q0:#38bdf8;--q1:#fb923c;--q2:#4ade80;
+    --mono:'IBM Plex Mono',monospace;--sans:'Inter',system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
+  }
+  body{
+    min-height:100vh;background:
+      radial-gradient(circle at 20% 0%, rgba(56,189,248,.16), transparent 34%),
+      radial-gradient(circle at 80% 10%, rgba(139,92,246,.18), transparent 32%),
+      radial-gradient(circle at 50% 100%, rgba(74,222,128,.08), transparent 34%),
+      var(--bg);
+    color:var(--text);font-family:var(--sans);padding:22px;
+  }
+  .app{max-width:1180px;margin:0 auto}
+  header{text-align:center;margin:4px 0 24px}
+  .badge{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--border);background:rgba(255,255,255,.04);border-radius:999px;padding:7px 12px;margin-bottom:12px;font-size:.7rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+  .pulse{width:8px;height:8px;border-radius:50%;background:var(--accent2);box-shadow:0 0 0 6px rgba(34,211,238,.12)}
+  h1{font-size:clamp(2rem,4vw,4.4rem);line-height:.98;letter-spacing:-.055em;font-weight:800;background:linear-gradient(90deg,#fff,#a5b4fc,#67e8f9);-webkit-background-clip:text;background-clip:text;color:transparent}
+  header p{max-width:720px;margin:12px auto 0;color:var(--muted);font-size:.95rem;line-height:1.55}
+  .qubits{display:flex;gap:10px;margin:0 0 18px;justify-content:center;flex-wrap:wrap}
+  .qubit-chip{font-family:var(--mono);font-size:.75rem;padding:7px 14px;border-radius:999px;border:1px solid var(--border);background:rgba(255,255,255,.035);display:flex;align-items:center;gap:8px;color:var(--muted)}
+  .dot{width:9px;height:9px;border-radius:50%}.q0{background:var(--q0)}.q1{background:var(--q1)}.q2{background:var(--q2)}
+  .layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}@media(max-width:920px){.layout{grid-template-columns:1fr}}
+  .stack{display:flex;flex-direction:column;gap:14px}
+  .card{background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.026));border:1px solid var(--border);border-radius:20px;padding:16px;box-shadow:0 24px 60px rgba(0,0,0,.18);backdrop-filter:blur(14px)}
+  .card h2{font-size:.62rem;letter-spacing:.22em;text-transform:uppercase;color:var(--dim);margin-bottom:13px;font-weight:700}
+  .subgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:560px){.subgrid{grid-template-columns:1fr}}
+  .gate-section{margin-bottom:14px}.gate-section:last-child{margin-bottom:0}
+  .label{font-size:.56rem;color:var(--dim);letter-spacing:.17em;text-transform:uppercase;margin-bottom:7px;font-weight:700}
+  .gate-row{display:flex;flex-wrap:wrap;gap:7px}
+  button,.select{
+    font-family:var(--mono);font-size:.74rem;font-weight:700;padding:8px 12px;border-radius:10px;border:1px solid var(--border);
+    background:rgba(255,255,255,.035);color:var(--text);cursor:pointer;transition:transform .15s,border-color .15s,background .15s,color .15s;
+  }
+  button:hover{background:rgba(139,92,246,.13);border-color:rgba(139,92,246,.55);transform:translateY(-1px)}
+  button.active{border-color:var(--accent2);background:rgba(34,211,238,.12);color:#e0fbff}
+  button.measure{background:rgba(250,204,21,.10);border-color:rgba(250,204,21,.25);color:var(--warn)}
+  button.reset{background:rgba(251,113,133,.09);border-color:rgba(251,113,133,.24);color:#fecdd3}
+  .select{appearance:none;padding-right:28px;background:rgba(255,255,255,.04);color:#fff;min-width:80px}.select option{background:#11111c;color:#fff}
+  .pair{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.arrow{color:var(--dim);font-family:var(--mono);font-weight:700}
+  .preset-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}@media(max-width:560px){.preset-row{grid-template-columns:1fr}}
+  .hint{font-size:.75rem;color:var(--muted);line-height:1.5;margin-top:8px}.hint strong{color:#fff}
+  .state-vector{display:flex;flex-direction:column;gap:7px}
+  .sv-row{display:grid;grid-template-columns:64px 1fr 58px 80px 32px;gap:8px;align-items:center;font-family:var(--mono);font-size:.75rem;padding:8px 10px;border-radius:12px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.065)}
+  @media(max-width:560px){.sv-row{grid-template-columns:56px 1fr 52px 28px}.sv-amp{display:none}}
+  .sv-label{font-weight:700;color:#fff}.sv-bar-wrap{height:22px;background:rgba(255,255,255,.055);border-radius:8px;overflow:hidden;position:relative}.sv-bar{height:100%;border-radius:8px;transition:width .25s ease}.sv-prob{text-align:right;color:var(--muted);font-weight:700}.sv-amp{color:var(--dim);font-size:.65rem;white-space:nowrap;text-align:right}.sv-phase{width:26px;height:26px;border-radius:50%;border:2px solid rgba(255,255,255,.16);position:relative;margin:auto}.sv-phase-dot{width:7px;height:7px;border-radius:50%;position:absolute;transform:translate(-50%,-50%)}
+  .circuit-wrap{overflow-x:auto;padding-bottom:2px}.circuit-placeholder{font-size:.75rem;color:var(--dim);text-align:center;padding:22px;font-style:italic}.circuit{display:none;flex-direction:column;gap:0;min-width:max-content}.wire{display:flex;align-items:center;height:36px}.wire-label{width:32px;flex:0 0 32px;text-align:center;font-family:var(--mono);font-size:.68rem;font-weight:700}.wire-line{display:flex;align-items:center;min-height:36px;position:relative}.wire-line::before{content:'';position:absolute;left:0;right:0;top:50%;height:1px;background:rgba(255,255,255,.13)}.circuit-cell{width:42px;height:36px;position:relative;display:flex;align-items:center;justify-content:center;flex:0 0 42px}.v-connector{position:absolute;left:50%;width:2px;background:rgba(139,92,246,.7);transform:translateX(-50%);z-index:1}.v-mid{top:0;bottom:0}.v-top{top:50%;bottom:0}.v-bottom{top:0;bottom:50%}.gate-marker{width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:.62rem;font-weight:800;position:relative;z-index:2;border:1px solid}.wire-dot{width:11px;height:11px;border-radius:50%;background:var(--accent);position:relative;z-index:2;box-shadow:0 0 0 5px rgba(139,92,246,.13)}
+  .log{max-height:116px;overflow-y:auto;font-family:var(--mono);font-size:.64rem;color:var(--dim);padding:10px;background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.045);border-radius:12px}.log div{padding:2px 0}.op{color:#c4b5fd}.meas{color:#fde68a}.resetText{color:#fecdd3}
+  .bloch-row{display:flex;gap:13px;justify-content:center;flex-wrap:wrap}.bloch-container{text-align:center}.bloch-label{font-family:var(--mono);font-size:.75rem;font-weight:800;margin-bottom:6px}.bloch-canvas{background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.08);border-radius:16px}.bloch-stats{margin-top:6px;font-family:var(--mono);font-size:.58rem;line-height:1.45;color:var(--muted);display:grid;grid-template-columns:repeat(4,1fr);gap:4px}.bloch-stats span{background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.055);border-radius:7px;padding:3px 4px}.bloch-note{font-size:.68rem;color:var(--dim);margin-top:6px;line-height:1.4}
+  .explain{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}@media(max-width:720px){.explain{grid-template-columns:1fr}}.mini{background:rgba(255,255,255,.035);border:1px solid var(--border);border-radius:14px;padding:12px}.mini b{display:block;font-size:.76rem;margin-bottom:4px}.mini span{font-size:.72rem;color:var(--muted);line-height:1.45}
+</style>
 </head>
-<body class="bg-gray-100 overflow-hidden relative font-sans">
+<body>
+<div class="app">
+  <header>
+    <div class="badge"><span class="pulse"></span>World Quantum Day 2026</div>
+    <h1>3-Qubit Quantum Computer</h1>
+    <p>Build a small circuit, watch the full state vector evolve, and see each qubit’s reduced Bloch vector. Measurement collapses the current quantum state.</p>
+  </header>
 
-    <!-- Mobile Header -->
-    <div class="md:hidden absolute top-0 left-0 right-0 z-50 bg-white shadow-md p-4 flex justify-between items-center">
-        <h1 class="text-lg font-bold text-gray-800">Khanbogd Hub</h1>
-        <button id="menuBtn" class="text-gray-600 focus:outline-none">
-            <i class="fas fa-bars fa-lg"></i>
-        </button>
-    </div>
+  <div class="qubits">
+    <div class="qubit-chip"><span class="dot q0"></span>q0 = most significant bit</div>
+    <div class="qubit-chip"><span class="dot q1"></span>q1</div>
+    <div class="qubit-chip"><span class="dot q2"></span>q2 = least significant bit</div>
+  </div>
 
-    <div class="flex h-screen">
-        
-        <!-- Sidebar -->
-        <div id="sidebar" class="fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition duration-200 ease-in-out z-50 w-96 bg-white shadow-lg flex flex-col h-full border-r border-gray-200">
-            <!-- Sidebar Header -->
-            <div class="p-6 bg-slate-900 text-white">
-                <div class="flex items-center justify-between mb-2">
-                    <h2 class="text-2xl font-bold">South Gobi Hub</h2>
-                    <button id="closeSidebar" class="md:hidden text-white">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                <p class="text-slate-400 text-sm">Startup & Industry Ecosystem</p>
-            </div>
-
-            <!-- Locations List -->
-            <div class="flex-1 overflow-y-auto sidebar-scroll p-4 space-y-4">
-                
-                <!-- Reference Point: Khanbogd -->
-                <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r shadow-sm cursor-pointer hover:bg-blue-100 transition group" onclick="flyToLocation(43.1958, 107.2000)">
-                    <div class="flex items-start">
-                        <div class="mt-1 mr-3 text-blue-600 group-hover:scale-110 transition-transform">
-                            <i class="fas fa-city fa-lg"></i>
-                        </div>
-                        <div>
-                            <h3 class="font-bold text-gray-800">Khanbogd Soum Center</h3>
-                            <p class="text-xs text-gray-500 mt-1">District Center (Startup HQ)</p>
-                            <p class="text-xs text-gray-400 font-mono mt-1">43.1958° N, 107.2000° E</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="border-t border-gray-200 my-2"></div>
-                
-                <!-- Filters -->
-                <div class="flex flex-wrap gap-2 mb-2">
-                    <span class="px-2 py-1 bg-amber-100 text-amber-800 text-[10px] font-bold rounded uppercase">Mines</span>
-                    <span class="px-2 py-1 bg-green-100 text-green-800 text-[10px] font-bold rounded uppercase">Services</span>
-                    <span class="px-2 py-1 bg-cyan-100 text-cyan-800 text-[10px] font-bold rounded uppercase">Logistics</span>
-                    <span class="px-2 py-1 bg-rose-100 text-rose-800 text-[10px] font-bold rounded uppercase">Power</span>
-                </div>
-
-                <!-- Mining List Container (Populated by JS) -->
-                <div id="mining-list" class="space-y-3"></div>
-
-            </div>
-
-            <!-- AI Response Panel -->
-            <div id="ai-panel" class="hidden absolute inset-0 bg-white z-50 flex flex-col shadow-2xl transform transition-transform duration-300 translate-y-full">
-                <div class="bg-gradient-to-r from-purple-600 to-indigo-600 p-4 text-white flex justify-between items-center shadow-md">
-                    <div class="flex items-center gap-2">
-                        <i class="fas fa-robot"></i>
-                        <h3 class="font-bold">Gemini Intelligence</h3>
-                    </div>
-                    <button onclick="closeAiPanel()" class="hover:bg-white/20 rounded-full p-1 transition">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                <div class="flex-1 overflow-y-auto p-6 sidebar-scroll bg-gray-50">
-                    <div id="ai-loading" class="hidden flex-col items-center justify-center h-full text-gray-500 space-y-3">
-                        <div class="loader w-8 h-8 border-4 border-indigo-200 border-t-indigo-600"></div>
-                        <p class="animate-pulse text-sm font-medium">Analyzing market opportunity...</p>
-                    </div>
-                    <div id="ai-content" class="prose prose-sm max-w-none text-gray-700">
-                        <!-- Content goes here -->
-                    </div>
-                </div>
-            </div>
-
-            <!-- Footer -->
-            <div class="p-4 border-t border-gray-200 bg-gray-50 text-center text-xs text-gray-500">
-                <p>Data source: OpenStreetMap & Public Mining Records</p>
-                <p class="mt-1">&copy; 2025 Khanbogd Maps</p>
-            </div>
+  <div class="layout">
+    <div class="stack">
+      <div class="card">
+        <h2>Apply Gates</h2>
+        <div class="gate-section">
+          <div class="label">Single-qubit target</div>
+          <div class="gate-row" id="singleTargetButtons">
+            <button class="active" onclick="setSingleTarget(0)">q0</button>
+            <button onclick="setSingleTarget(1)">q1</button>
+            <button onclick="setSingleTarget(2)">q2</button>
+          </div>
+        </div>
+        <div class="gate-section">
+          <div class="label">Single-qubit gates</div>
+          <div class="gate-row">
+            <button onclick="applyGate('H')" title="Hadamard: creates superposition">H</button>
+            <button onclick="applyGate('X')" title="Pauli-X: bit flip">X</button>
+            <button onclick="applyGate('Y')" title="Pauli-Y: bit + phase flip">Y</button>
+            <button onclick="applyGate('Z')" title="Pauli-Z: phase flip">Z</button>
+            <button onclick="applyGate('S')" title="S gate: π/2 phase">S</button>
+            <button onclick="applyGate('T')" title="T gate: π/4 phase">T</button>
+          </div>
         </div>
 
-        <!-- Overlay for mobile sidebar -->
-        <div id="sidebarOverlay" class="hidden fixed inset-0 sidebar-overlay md:hidden"></div>
-
-        <!-- Map Area -->
-        <div class="flex-1 relative">
-            <div id="map"></div>
-            
-            <!-- Map Legend (Floating) -->
-            <div class="absolute bottom-6 right-6 bg-white/95 backdrop-blur-sm p-4 rounded-lg shadow-lg z-[400] text-sm hidden sm:block border border-gray-200 w-52">
-                <h4 class="font-bold mb-3 text-gray-800 uppercase text-xs tracking-wider border-b pb-2">Legend</h4>
-                <div class="flex items-center mb-2">
-                    <span class="w-3 h-3 rounded-full bg-blue-500 mr-2 border border-white shadow-sm ring-1 ring-blue-200"></span>
-                    <span>Soum Center</span>
-                </div>
-                <div class="flex items-center mb-2">
-                    <span class="w-3 h-3 rounded-full bg-amber-500 mr-2 border border-white shadow-sm ring-1 ring-amber-200"></span>
-                    <span>Major Mine</span>
-                </div>
-                <div class="flex items-center mb-2">
-                    <span class="w-3 h-3 rounded-full bg-green-500 mr-2 border border-white shadow-sm ring-1 ring-green-200"></span>
-                    <span>Service Cluster</span>
-                </div>
-                <div class="flex items-center mb-2">
-                    <span class="w-3 h-3 rounded-full bg-cyan-500 mr-2 border border-white shadow-sm ring-1 ring-cyan-200"></span>
-                    <span>Logistics Infrastructure</span>
-                </div>
-                <div class="flex items-center">
-                    <span class="w-3 h-3 rounded-full bg-rose-500 mr-2 border border-white shadow-sm ring-1 ring-rose-200"></span>
-                    <span>Power / Energy</span>
-                </div>
+        <div class="subgrid">
+          <div class="gate-section">
+            <div class="label">CNOT: control → target</div>
+            <div class="pair">
+              <select class="select" id="cnotControl" onchange="syncSelectors()"><option value="0">q0</option><option value="1">q1</option><option value="2">q2</option></select>
+              <span class="arrow">→</span>
+              <select class="select" id="cnotTarget" onchange="syncSelectors()"><option value="0">q0</option><option value="1" selected>q1</option><option value="2">q2</option></select>
+              <button onclick="applyCNOT()">CNOT</button>
             </div>
+          </div>
+          <div class="gate-section">
+            <div class="label">SWAP: exchange two qubits</div>
+            <div class="pair">
+              <select class="select" id="swapA" onchange="syncSelectors()"><option value="0">q0</option><option value="1">q1</option><option value="2">q2</option></select>
+              <span class="arrow">↔</span>
+              <select class="select" id="swapB" onchange="syncSelectors()"><option value="0">q0</option><option value="1" selected>q1</option><option value="2">q2</option></select>
+              <button onclick="applySWAP()">SWAP</button>
+            </div>
+          </div>
         </div>
+
+        <div class="gate-section">
+          <div class="label">Toffoli: two controls → selected target</div>
+          <div class="pair">
+            <span class="hint" id="toffoliHint" style="margin:0">controls q1, q2 → target q0</span>
+            <button onclick="applyToffoli()">Toffoli</button>
+          </div>
+        </div>
+
+        <div class="gate-section">
+          <div class="label">Measurement and reset</div>
+          <div class="gate-row">
+            <button class="measure" onclick="measureAll()">Measure all</button>
+            <button class="measure" onclick="measureOne()">Measure q<span id="measTarget">0</span></button>
+            <button class="reset" onclick="resetState(true)">Reset |000⟩</button>
+          </div>
+          <div class="hint"><strong>Note:</strong> The state uses basis order |q0 q1 q2⟩, so |101⟩ means q0=1, q1=0, q2=1. Press Measure repeatedly to run fresh shots of the same unitary circuit.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Presets</h2>
+        <div class="preset-row">
+          <button onclick="presetBell()">Bell pair q0–q1</button>
+          <button onclick="presetGHZ()">GHZ state</button>
+          <button onclick="presetPhase()">Phase demo</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Circuit</h2>
+        <div class="circuit-wrap">
+          <div class="circuit-placeholder" id="circuitPlaceholder">Apply gates to build your circuit</div>
+          <div class="circuit" id="circuit">
+            <div class="wire"><div class="wire-label" style="color:var(--q0)">q0</div><div class="wire-line" id="wire0"></div></div>
+            <div class="wire"><div class="wire-label" style="color:var(--q1)">q1</div><div class="wire-line" id="wire1"></div></div>
+            <div class="wire"><div class="wire-label" style="color:var(--q2)">q2</div><div class="wire-line" id="wire2"></div></div>
+          </div>
+        </div>
+        <div class="log" id="log"></div>
+      </div>
     </div>
 
-    <!-- Leaflet JS -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <div class="stack">
+      <div class="card">
+        <h2>State Vector |ψ⟩</h2>
+        <div class="state-vector" id="stateVector"></div>
+      </div>
 
-    <script>
-        // --- Gemini API Configuration ---
-        // ⚠️ INSTRUCTION: Paste your API Key inside the quotes below.
-        // Note: Anyone who has this file can see this key.
-        const apiKey = ""; 
+      <div class="card">
+        <h2>Bloch Spheres: reduced one-qubit states</h2>
+        <div class="bloch-row">
+          <div class="bloch-container"><div class="bloch-label" style="color:var(--q0)">q0</div><canvas class="bloch-canvas" id="bloch0" width="190" height="190"></canvas><div class="bloch-stats" id="blochStats0"></div></div>
+          <div class="bloch-container"><div class="bloch-label" style="color:var(--q1)">q1</div><canvas class="bloch-canvas" id="bloch1" width="190" height="190"></canvas><div class="bloch-stats" id="blochStats1"></div></div>
+          <div class="bloch-container"><div class="bloch-label" style="color:var(--q2)">q2</div><canvas class="bloch-canvas" id="bloch2" width="190" height="190"></canvas><div class="bloch-stats" id="blochStats2"></div></div>
+        </div>
+        <div class="hint">The numeric chips show the real Bloch vector ⟨X⟩, ⟨Y⟩, ⟨Z⟩ and length r. The sphere is a 2D perspective projection, so Y-depth can look visually shorter even when r=1.</div>
+      </div>
 
-        // --- Data Configuration ---
-        const khanbogdCoords = { lat: 43.1958, lng: 107.2000 };
-        
-        // Comprehensive List for Tech Startup Context
-        const miningSites = [
-            // --- LOGISTICS & INFRASTRUCTURE (Critical for Tech) ---
-            {
-                id: 'airport',
-                name: "Khanbumbat Airport (ZMKD)",
-                desc: "Air Logistics Hub | OT",
-                type: "infra",
-                details: "Critical logistics node for FIFO workers. Coordinates personnel movement for Oyu Tolgoi.",
-                coords: { lat: 43.1347, lng: 106.8472 }
-            },
-            {
-                id: 'border',
-                name: "Gashuun Sukhait Port",
-                desc: "Border Crossing | Logistics",
-                type: "infra",
-                details: "The main coal export gateway to China. Major bottleneck; opportunities for queue management/logistics tech.",
-                coords: { lat: 42.5450, lng: 107.5950 } // Approx border crossing
-            },
+      <div class="card">
+        <h2>What to notice</h2>
+        <div class="explain">
+          <div class="mini"><b>Superposition</b><span>H spreads amplitude across basis states. Probabilities are squared magnitudes of amplitudes.</span></div>
+          <div class="mini"><b>Phase</b><span>Z, S, and T can change phase without changing probabilities until later gates interfere.</span></div>
+          <div class="mini"><b>Entanglement</b><span>Bell/GHZ states make individual Bloch vectors mixed: r drops below 1.</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-             // --- ENERGY ---
-             {
-                id: 'windfarm',
-                name: "Khanbogd Wind Farm (Project)",
-                desc: "Renewable Energy | Planned",
-                type: "energy",
-                details: "102MW Wind Farm project located SE of Oyu Tolgoi. Represents green energy transition opportunities.",
-                coords: { lat: 42.9500, lng: 107.2000 } // Approx SE of OT
-            },
+<script>
+const N = 3;
+const DIM = 1 << N;
+const EPS = 1e-12;
+let state = [];
+let singleTarget = 0;
+let circuitOps = [];
 
-            // --- MAJOR MINES ---
-            {
-                id: 'ot',
-                name: "Oyu Tolgoi (Rio Tinto)",
-                desc: "Copper & Gold | Khanbogd",
-                type: "major",
-                details: "The anchor client. Highly automated, safety-focused. Uses procurement systems for IT/Tech services.",
-                coords: { lat: 43.0083, lng: 106.8431 }
-            },
-            
-            // --- SERVICE CLUSTER (Potential Clients) ---
-            {
-                id: 'khanbogd_khurd',
-                name: "Khanbogd Khurd",
-                desc: "Transport & Logistics",
-                type: "service",
-                details: "Major local transport company providing fleet services to OT. Potential client for fleet management tech.",
-                coords: { lat: 43.1980, lng: 107.2030 } 
-            },
-            {
-                id: 'sgms',
-                name: "South Gobi Mining Services",
-                desc: "Equipment & Parts",
-                type: "service",
-                details: "Supply chain heavyweight. Established in Khanbogd in 2014.",
-                coords: { lat: 43.1920, lng: 107.2050 } 
-            },
-            {
-                id: 'orem',
-                name: "Orem Khanbogd",
-                desc: "Engineering Solutions",
-                type: "service",
-                details: "Distributor for global industrial brands. Focus on engineering tech.",
-                coords: { lat: 43.1900, lng: 107.1950 }
-            },
-            {
-                id: 'wagner',
-                name: "Wagner Asia Equipment",
-                desc: "Caterpillar Dealer",
-                type: "service",
-                details: "Heavy equipment maintenance and sales.",
-                coords: { lat: 43.1880, lng: 107.2100 }
-            },
+function isMeasurementOp(op){
+  return op && (op.type === 'measure_all' || op.type === 'measure_one');
+}
+function replayCircuitWithoutMeasurements(){
+  const unitaryOps = circuitOps.filter(op => !isMeasurementOp(op));
+  initState();
+  for(const op of unitaryOps){
+    if(op.type === 'single') applySingleGateRaw(op.gate, op.qubit);
+    else if(op.type === 'cnot') applyCNOTRaw(op.control, op.target);
+    else if(op.type === 'swap') applySWAPRaw(op.q1, op.q2);
+    else if(op.type === 'toffoli') applyToffoliRaw(op.c1, op.c2, op.target);
+  }
+  renormalize();
+  circuitOps = unitaryOps;
+}
+function prepareFreshShotIfRepeatedMeasurement(){
+  if(circuitOps.length && isMeasurementOp(circuitOps[circuitOps.length - 1])){
+    replayCircuitWithoutMeasurements();
+  }
+}
 
-            // --- REGIONAL CONTEXT ---
-            {
-                id: 'tt_state',
-                name: "Erdenes Tavan Tolgoi",
-                desc: "State Coal Mine | Tsogttsetsii",
-                type: "major",
-                details: "Massive scale operations. High demand for efficiency and environmental monitoring tech.",
-                coords: { lat: 43.6250, lng: 105.4742 }
-            },
-             {
-                id: 'ts',
-                name: "Tsagaan Suvarga (MAK)",
-                desc: "Copper & Moly | Mandakh",
-                type: "major",
-                details: "Private sector giant (MAK). Developing smart mining capabilities.",
-                coords: { lat: 43.8611, lng: 108.3361 }
-            },
-            {
-                id: 'entree',
-                name: "Entrée Resources (JV)",
-                desc: "Exploration | Khanbogd",
-                type: "exploration",
-                details: "Hugo North Extension. Joint Venture partner.",
-                coords: { lat: 43.0450, lng: 106.8600 }
-            }
-        ];
+const qColors = ['#38bdf8', '#fb923c', '#4ade80'];
+const qColorsBright = ['#7dd3fc', '#fdba74', '#86efac'];
+const basisColors = ['#38bdf8','#fb923c','#4ade80','#f472b6','#facc15','#a78bfa','#f87171','#2dd4bf'];
 
-        // --- Map Initialization ---
-        const map = L.map('map', { zoomControl: false }).setView([khanbogdCoords.lat, khanbogdCoords.lng], 9);
-        
-        L.control.zoom({ position: 'topright' }).addTo(map);
+function zeroState(){
+  return Array.from({length:DIM}, (_,i)=> i===0 ? {re:1,im:0} : {re:0,im:0});
+}
+function initState(){state = zeroState();}
+initState();
 
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenStreetMap contributors'
-        }).addTo(map);
+function cadd(a,b){return {re:a.re+b.re, im:a.im+b.im};}
+function cmul(a,b){return {re:a.re*b.re-a.im*b.im, im:a.re*b.im+a.im*b.re};}
+function cscale(a,s){return {re:a.re*s, im:a.im*s};}
+function cnorm2(a){return a.re*a.re + a.im*a.im;}
+function cphase(a){return Math.atan2(a.im, a.re);}
+function bitMask(q){return 1 << (N - 1 - q);}
 
-        // --- Custom Icons ---
-        const IconBase = L.Icon.extend({
-            options: {
-                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-                iconSize: [25, 41],
-                iconAnchor: [12, 41],
-                popupAnchor: [1, -34],
-                shadowSize: [41, 41]
-            }
-        });
+const SQRT2_INV = 1/Math.sqrt(2);
+const GATES = {
+  H: [[{re:SQRT2_INV,im:0},{re:SQRT2_INV,im:0}],[{re:SQRT2_INV,im:0},{re:-SQRT2_INV,im:0}]],
+  X: [[{re:0,im:0},{re:1,im:0}],[{re:1,im:0},{re:0,im:0}]],
+  Y: [[{re:0,im:0},{re:0,im:-1}],[{re:0,im:1},{re:0,im:0}]],
+  Z: [[{re:1,im:0},{re:0,im:0}],[{re:0,im:0},{re:-1,im:0}]],
+  S: [[{re:1,im:0},{re:0,im:0}],[{re:0,im:0},{re:0,im:1}]],
+  T: [[{re:1,im:0},{re:0,im:0}],[{re:0,im:0},{re:Math.cos(Math.PI/4),im:Math.sin(Math.PI/4)}]],
+};
 
-        const redIcon = new IconBase({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png' });
-        const goldIcon = new IconBase({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-gold.png' });
-        const greenIcon = new IconBase({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png' });
-        const cyanIcon = new IconBase({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-grey.png' }); // Using grey for infra
-        const roseIcon = new IconBase({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png' });
-        const violetIcon = new IconBase({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-violet.png' });
+function applySingleGateRaw(gate, q){
+  const G = GATES[gate];
+  const mask = bitMask(q);
+  for(let i=0;i<DIM;i++){
+    if(i & mask) continue;
+    const j = i | mask;
+    const a = state[i], b = state[j];
+    state[i] = cadd(cmul(G[0][0], a), cmul(G[0][1], b));
+    state[j] = cadd(cmul(G[1][0], a), cmul(G[1][1], b));
+  }
+}
+function applyCNOTRaw(control,target){
+  if(control === target) return;
+  const cmask = bitMask(control), tmask = bitMask(target);
+  for(let i=0;i<DIM;i++){
+    if(!(i & cmask)) continue;
+    if(i & tmask) continue;
+    const j = i | tmask;
+    const tmp = state[i]; state[i] = state[j]; state[j] = tmp;
+  }
+}
+function applySWAPRaw(a,b){
+  if(a === b) return;
+  applyCNOTRaw(a,b); applyCNOTRaw(b,a); applyCNOTRaw(a,b);
+}
+function applyToffoliRaw(c1,c2,target){
+  if(c1 === c2 || c1 === target || c2 === target) return;
+  const m1 = bitMask(c1), m2 = bitMask(c2), tm = bitMask(target);
+  for(let i=0;i<DIM;i++){
+    if(!(i & m1) || !(i & m2)) continue;
+    if(i & tm) continue;
+    const j = i | tm;
+    const tmp = state[i]; state[i] = state[j]; state[j] = tmp;
+  }
+}
+function renormalize(){
+  const total = state.reduce((s,a)=>s+cnorm2(a),0);
+  if(total < EPS){initState(); return;}
+  const inv = 1/Math.sqrt(total);
+  state = state.map(a=>cscale(a, inv));
+}
 
-        // --- Distance Logic ---
-        function calculateDistance(lat1, lon1, lat2, lon2) {
-            const R = 6371; 
-            const dLat = deg2rad(lat2 - lat1);
-            const dLon = deg2rad(lon2 - lon1);
-            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
-            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-            return (R * c).toFixed(1);
-        }
+function qName(q){return `q${q}`;}
+function getSelectInt(id){return parseInt(document.getElementById(id).value,10);}
+function setSingleTarget(q){
+  singleTarget = q;
+  document.querySelectorAll('#singleTargetButtons button').forEach((b,i)=>b.classList.toggle('active', i===q));
+  document.getElementById('measTarget').textContent = q;
+  updateToffoliHint();
+}
+function syncSelectors(){
+  const cc = document.getElementById('cnotControl'), ct = document.getElementById('cnotTarget');
+  if(cc.value === ct.value) ct.value = String((parseInt(cc.value,10)+1)%N);
+  const sa = document.getElementById('swapA'), sb = document.getElementById('swapB');
+  if(sa.value === sb.value) sb.value = String((parseInt(sa.value,10)+1)%N);
+}
+function updateToffoliHint(){
+  const controls = [0,1,2].filter(q=>q!==singleTarget);
+  document.getElementById('toffoliHint').textContent = `controls ${qName(controls[0])}, ${qName(controls[1])} → target ${qName(singleTarget)}`;
+}
 
-        function deg2rad(deg) { return deg * (Math.PI / 180); }
+function applyGate(gate){
+  applySingleGateRaw(gate, singleTarget);
+  circuitOps.push({type:'single', gate, qubit:singleTarget});
+  addLog(`<span class="op">${gate}</span> on ${qName(singleTarget)}`);
+  renormalize(); render();
+}
+function applyCNOT(){
+  syncSelectors();
+  const control = getSelectInt('cnotControl'), target = getSelectInt('cnotTarget');
+  applyCNOTRaw(control,target);
+  circuitOps.push({type:'cnot', control, target});
+  addLog(`<span class="op">CNOT</span> ${qName(control)} → ${qName(target)}`);
+  renormalize(); render();
+}
+function applySWAP(){
+  syncSelectors();
+  const a = getSelectInt('swapA'), b = getSelectInt('swapB');
+  applySWAPRaw(a,b);
+  circuitOps.push({type:'swap', q1:a, q2:b});
+  addLog(`<span class="op">SWAP</span> ${qName(a)} ↔ ${qName(b)}`);
+  renormalize(); render();
+}
+function applyToffoli(){
+  const target = singleTarget;
+  const controls = [0,1,2].filter(q=>q!==target);
+  applyToffoliRaw(controls[0], controls[1], target);
+  circuitOps.push({type:'toffoli', c1:controls[0], c2:controls[1], target});
+  addLog(`<span class="op">Toffoli</span> ${qName(controls[0])}, ${qName(controls[1])} → ${qName(target)}`);
+  renormalize(); render();
+}
 
-        // --- App Logic ---
+function probabilities(){
+  const raw = state.map(cnorm2);
+  const total = raw.reduce((a,b)=>a+b,0);
+  return total > EPS ? raw.map(p=>p/total) : raw;
+}
+function measureAll(){
+  prepareFreshShotIfRepeatedMeasurement();
+  renormalize();
+  const probs = probabilities();
+  let r = Math.random(), cumulative = 0, result = DIM-1;
+  for(let i=0;i<DIM;i++){
+    cumulative += probs[i];
+    if(r <= cumulative + EPS){result = i; break;}
+  }
+  state = Array.from({length:DIM}, (_,i)=> i===result ? {re:1,im:0} : {re:0,im:0});
+  const bits = result.toString(2).padStart(N,'0');
+  circuitOps.push({type:'measure_all', result:bits});
+  addLog(`<span class="meas">MEASURE ALL → |${bits}⟩</span>`);
+  render();
+}
+function measureOne(){
+  prepareFreshShotIfRepeatedMeasurement();
+  renormalize();
+  const q = singleTarget, mask = bitMask(q);
+  let p0 = 0;
+  for(let i=0;i<DIM;i++) if(!(i & mask)) p0 += cnorm2(state[i]);
+  p0 = Math.max(0, Math.min(1, p0));
+  const result = Math.random() < p0 ? 0 : 1;
+  const pResult = result === 0 ? p0 : 1-p0;
+  const norm = Math.sqrt(Math.max(pResult, EPS));
+  for(let i=0;i<DIM;i++){
+    const bit = (i & mask) ? 1 : 0;
+    state[i] = bit === result ? {re:state[i].re/norm, im:state[i].im/norm} : {re:0, im:0};
+  }
+  circuitOps.push({type:'measure_one', qubit:q, result});
+  addLog(`<span class="meas">MEASURE ${qName(q)} → |${result}⟩</span>`);
+  render();
+}
+function resetState(withLog=false){
+  initState(); circuitOps = [];
+  document.getElementById('log').innerHTML = '';
+  if(withLog) addLog('<span class="resetText">Reset to |000⟩</span>');
+  render();
+}
+function resetForPreset(name){
+  initState(); circuitOps = []; document.getElementById('log').innerHTML = ''; addLog(`<span class="resetText">Preset: ${name}</span>`);
+}
+function presetBell(){
+  resetForPreset('Bell pair q0–q1');
+  applySingleGateRaw('H',0); circuitOps.push({type:'single',gate:'H',qubit:0});
+  applyCNOTRaw(0,1); circuitOps.push({type:'cnot',control:0,target:1});
+  addLog(`<span class="op">H q0; CNOT q0 → q1</span>`);
+  renormalize(); render();
+}
+function presetGHZ(){
+  resetForPreset('GHZ');
+  applySingleGateRaw('H',0); circuitOps.push({type:'single',gate:'H',qubit:0});
+  applyCNOTRaw(0,1); circuitOps.push({type:'cnot',control:0,target:1});
+  applyCNOTRaw(0,2); circuitOps.push({type:'cnot',control:0,target:2});
+  addLog(`<span class="op">H q0; CNOT q0 → q1; CNOT q0 → q2</span>`);
+  renormalize(); render();
+}
+function presetPhase(){
+  resetForPreset('Phase demo');
+  applySingleGateRaw('H',0); circuitOps.push({type:'single',gate:'H',qubit:0});
+  applySingleGateRaw('T',0); circuitOps.push({type:'single',gate:'T',qubit:0});
+  applySingleGateRaw('H',0); circuitOps.push({type:'single',gate:'H',qubit:0});
+  addLog(`<span class="op">H q0; T q0; H q0</span>`);
+  renormalize(); render();
+}
 
-        // 1. Draw Khanbogd Reference
-        L.marker([khanbogdCoords.lat, khanbogdCoords.lng], { icon: redIcon })
-            .addTo(map)
-            .bindPopup(`
-                <div class="font-sans min-w-[200px]">
-                    <h3 class="font-bold text-blue-800 text-lg border-b pb-1 mb-2">Khanbogd Soum</h3>
-                    <p class="text-sm text-gray-600">District Center</p>
-                    <span class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded mt-2">Startup HQ</span>
-                </div>
-            `);
+function addLog(msg){
+  const log = document.getElementById('log');
+  const d = document.createElement('div');
+  d.innerHTML = `${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})} ${msg}`;
+  log.appendChild(d); log.scrollTop = log.scrollHeight;
+}
+function formatComplex(a){
+  const re = Math.abs(a.re) < 0.0005 ? 0 : a.re;
+  const im = Math.abs(a.im) < 0.0005 ? 0 : a.im;
+  const rs = re.toFixed(3);
+  const is = Math.abs(im).toFixed(3);
+  if(Math.abs(im) < 0.0005) return rs;
+  if(Math.abs(re) < 0.0005) return `${im<0?'-':''}${is}i`;
+  return `${rs}${im<0?'-':'+'}${is}i`;
+}
 
-        // 2. Render List & Map Markers
-        const listContainer = document.getElementById('mining-list');
+function render(){renderStateVector(); renderCircuit(); renderBloch();}
+function renderStateVector(){
+  const container = document.getElementById('stateVector');
+  const probs = probabilities();
+  const maxProb = Math.max(...probs, 0.001);
+  let html = '';
+  for(let i=0;i<DIM;i++){
+    const bits = i.toString(2).padStart(N,'0');
+    const prob = probs[i];
+    const pct = (prob*100).toFixed(1);
+    const barW = (prob/maxProb*100).toFixed(1);
+    const phase = cphase(state[i]);
+    const dotX = 13 + Math.cos(phase)*8;
+    const dotY = 13 - Math.sin(phase)*8;
+    const active = prob >= 0.001;
+    html += `<div class="sv-row" style="opacity:${active?1:.32}">
+      <div class="sv-label">|${bits}⟩</div>
+      <div class="sv-bar-wrap"><div class="sv-bar" style="width:${barW}%;background:${basisColors[i]}"></div></div>
+      <div class="sv-prob">${pct}%</div>
+      <div class="sv-amp">${formatComplex(state[i])}</div>
+      <div class="sv-phase" title="phase ${(phase*180/Math.PI).toFixed(0)}°" style="border-color:${active?basisColors[i]:'transparent'}">
+        ${active ? `<div class="sv-phase-dot" style="left:${dotX}px;top:${dotY}px;background:${basisColors[i]}"></div>` : ''}
+      </div>
+    </div>`;
+  }
+  container.innerHTML = html;
+}
+function connectorFor(op,q){
+  let points = [];
+  if(op.type === 'cnot') points = [op.control, op.target];
+  else if(op.type === 'swap') points = [op.q1, op.q2];
+  else if(op.type === 'toffoli') points = [op.c1, op.c2, op.target];
+  else return '';
+  const min = Math.min(...points), max = Math.max(...points);
+  if(q < min || q > max) return '';
+  if(q === min) return '<span class="v-connector v-top"></span>';
+  if(q === max) return '<span class="v-connector v-bottom"></span>';
+  return '<span class="v-connector v-mid"></span>';
+}
+function cellFor(op,q){
+  const connector = connectorFor(op,q);
+  if(op.type === 'single'){
+    return `<div class="circuit-cell">${q===op.qubit ? `<div class="gate-marker" style="background:${qColors[q]}18;border-color:${qColors[q]};color:${qColors[q]}">${op.gate}</div>` : ''}</div>`;
+  }
+  if(op.type === 'cnot'){
+    let mark = '';
+    if(q===op.control) mark = '<div class="wire-dot"></div>';
+    if(q===op.target) mark = '<div class="gate-marker" style="background:rgba(139,92,246,.14);border-color:var(--accent);color:#ddd6fe;border-radius:50%">+</div>';
+    return `<div class="circuit-cell">${connector}${mark}</div>`;
+  }
+  if(op.type === 'swap'){
+    const mark = (q===op.q1 || q===op.q2) ? '<div class="gate-marker" style="background:rgba(139,92,246,.14);border-color:var(--accent);color:#ddd6fe">×</div>' : '';
+    return `<div class="circuit-cell">${connector}${mark}</div>`;
+  }
+  if(op.type === 'toffoli'){
+    let mark = '';
+    if(q===op.c1 || q===op.c2) mark = '<div class="wire-dot"></div>';
+    if(q===op.target) mark = '<div class="gate-marker" style="background:rgba(139,92,246,.14);border-color:var(--accent);color:#ddd6fe;border-radius:50%">+</div>';
+    return `<div class="circuit-cell">${connector}${mark}</div>`;
+  }
+  if(op.type === 'measure_all'){
+    return `<div class="circuit-cell"><div class="gate-marker" style="background:rgba(250,204,21,.12);border-color:#facc15;color:#fde68a">M</div></div>`;
+  }
+  if(op.type === 'measure_one'){
+    return `<div class="circuit-cell">${q===op.qubit ? `<div class="gate-marker" style="background:rgba(250,204,21,.12);border-color:#facc15;color:#fde68a">M</div>` : ''}</div>`;
+  }
+  return '<div class="circuit-cell"></div>';
+}
+function renderCircuit(){
+  const empty = circuitOps.length === 0;
+  document.getElementById('circuitPlaceholder').style.display = empty ? 'block' : 'none';
+  document.getElementById('circuit').style.display = empty ? 'none' : 'flex';
+  if(empty) return;
+  for(let q=0;q<N;q++) document.getElementById(`wire${q}`).innerHTML = circuitOps.map(op=>cellFor(op,q)).join('');
+}
 
-        miningSites.forEach(site => {
-            const distance = calculateDistance(khanbogdCoords.lat, khanbogdCoords.lng, site.coords.lat, site.coords.lng);
-            
-            // Determine Styling based on Type
-            let markerIcon, iconColorClass, hoverBorder, iconClass;
-            
-            switch(site.type) {
-                case 'major':
-                    markerIcon = goldIcon;
-                    iconColorClass = 'text-amber-500 group-hover:text-amber-600';
-                    hoverBorder = 'hover:border-amber-300';
-                    iconClass = 'fa-industry';
-                    break;
-                case 'service':
-                    markerIcon = greenIcon;
-                    iconColorClass = 'text-green-600 group-hover:text-green-700';
-                    hoverBorder = 'hover:border-green-300';
-                    iconClass = 'fa-tools';
-                    break;
-                case 'infra':
-                    markerIcon = cyanIcon;
-                    iconColorClass = 'text-cyan-600 group-hover:text-cyan-700';
-                    hoverBorder = 'hover:border-cyan-300';
-                    iconClass = site.id === 'airport' ? 'fa-plane' : 'fa-truck-moving';
-                    break;
-                case 'energy':
-                    markerIcon = roseIcon;
-                    iconColorClass = 'text-rose-600 group-hover:text-rose-700';
-                    hoverBorder = 'hover:border-rose-300';
-                    iconClass = 'fa-wind';
-                    break;
-                default:
-                    markerIcon = violetIcon;
-                    iconColorClass = 'text-indigo-500 group-hover:text-indigo-600';
-                    hoverBorder = 'hover:border-indigo-300';
-                    iconClass = 'fa-search-location';
-            }
+function getReducedDensityMatrix(q){
+  const mask = bitMask(q);
+  const otherMask = ((1 << N) - 1) ^ mask;
+  let rho00={re:0,im:0}, rho01={re:0,im:0}, rho10={re:0,im:0}, rho11={re:0,im:0};
+  for(let i=0;i<DIM;i++){
+    for(let j=0;j<DIM;j++){
+      if((i & otherMask) !== (j & otherMask)) continue;
+      const qi = (i & mask) ? 1 : 0;
+      const qj = (j & mask) ? 1 : 0;
+      const prod = cmul(state[i], {re:state[j].re, im:-state[j].im});
+      if(qi===0 && qj===0) rho00 = cadd(rho00, prod);
+      if(qi===0 && qj===1) rho01 = cadd(rho01, prod);
+      if(qi===1 && qj===0) rho10 = cadd(rho10, prod);
+      if(qi===1 && qj===1) rho11 = cadd(rho11, prod);
+    }
+  }
+  return {rho00,rho01,rho10,rho11};
+}
+function blochVector(q){
+  const rho = getReducedDensityMatrix(q);
+  return {
+    x: 2*rho.rho01.re,
+    y: -2*rho.rho01.im,
+    z: rho.rho00.re - rho.rho11.re
+  };
+}
+function renderBloch(){
+  const clamp = v => Math.max(-1, Math.min(1, v));
+  const fmt = v => (Math.abs(v) < 0.005 ? 0 : v).toFixed(2);
 
-            // A. Create Sidebar Card
-            const card = document.createElement('div');
-            card.className = `bg-white border border-gray-200 p-3 rounded-lg shadow-sm cursor-pointer hover:shadow-md ${hoverBorder} transition group relative overflow-hidden`;
-            card.innerHTML = `
-                <div class="flex items-start justify-between relative z-10">
-                    <div class="flex items-start w-full" onclick="flyToLocation(${site.coords.lat}, ${site.coords.lng})">
-                        <div class="mt-1 mr-3 ${iconColorClass} transition-colors">
-                            <i class="fas ${iconClass} fa-lg"></i>
-                        </div>
-                        <div class="flex-1">
-                            <h3 class="font-bold text-gray-800 text-sm transition-colors">${site.name}</h3>
-                            <p class="text-xs text-gray-500 mt-0.5">${site.desc}</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="mt-2 flex items-center justify-between relative z-10">
-                    <div class="flex items-center bg-gray-50 rounded px-2 py-1 text-[10px] text-gray-600">
-                        <i class="fas fa-location-arrow mr-1 opacity-50"></i>
-                        <span class="font-semibold">${distance} km</span>
-                    </div>
-                    <button onclick="askGemini('${site.name}')" class="flex items-center gap-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-2 py-1 rounded text-[10px] font-semibold transition-colors border border-indigo-200">
-                        <i class="fas fa-sparkles"></i>
-                        Analysis
-                    </button>
-                </div>
-            `;
-            listContainer.appendChild(card);
+  for(let q=0;q<N;q++){
+    const canvas = document.getElementById(`bloch${q}`);
+    const ctx = canvas.getContext('2d');
+    const w = canvas.width, h = canvas.height;
+    const cx = w/2, cy = h/2 - 4, r = 58;
+    ctx.clearRect(0,0,w,h);
 
-            // B. Create Map Marker
-            const popupContent = `
-                <div class="font-sans min-w-[220px]">
-                    <div class="flex items-center gap-2 mb-2 border-b border-gray-100 pb-2">
-                        <i class="fas ${iconClass} ${iconColorClass}"></i>
-                        <h3 class="font-bold text-gray-800 text-base m-0">${site.name}</h3>
-                    </div>
-                    <p class="text-sm text-gray-600 mb-2 leading-snug">${site.details}</p>
-                    <div class="flex items-center justify-between mt-3">
-                        <span class="text-xs font-mono font-bold text-slate-500 bg-slate-100 px-2 py-1 rounded">${distance} km</span>
-                        <button onclick="askGemini('${site.name}')" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-3 py-1.5 rounded shadow-sm transition-colors">
-                            <i class="fas fa-robot mr-1"></i> AI Analysis
-                        </button>
-                    </div>
-                </div>
-            `;
+    const bv = blochVector(q);
+    const x = clamp(bv.x), y = clamp(bv.y), z = clamp(bv.z);
+    const rLen = Math.min(1, Math.sqrt(x*x + y*y + z*z));
 
-            L.marker([site.coords.lat, site.coords.lng], { icon: markerIcon })
-                .addTo(map)
-                .bindPopup(popupContent);
+    // Oblique 3D-to-2D projection. This is intentionally used only for drawing;
+    // the numeric chips below are the exact Bloch coordinates.
+    const project = (vx, vy, vz) => ({
+      px: cx + vx*r + vy*r*0.52,
+      py: cy - vz*r - vy*r*0.30
+    });
 
-            // C. Draw Connector Line (Only for mines > 1km away)
-            if (distance > 2) {
-                L.polyline([
-                    [khanbogdCoords.lat, khanbogdCoords.lng],
-                    [site.coords.lat, site.coords.lng]
-                ], {
-                    color: '#64748b',
-                    weight: 1,
-                    opacity: 0.1,
-                    dashArray: '4, 8'
-                }).addTo(map);
-            }
-        });
+    const grad = ctx.createRadialGradient(cx-20,cy-24,5,cx,cy,r);
+    grad.addColorStop(0, `${qColors[q]}1f`);
+    grad.addColorStop(1, 'rgba(255,255,255,0.012)');
+    ctx.fillStyle = grad;
+    ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.fill();
 
-        // --- Interaction Functions ---
+    ctx.strokeStyle='rgba(255,255,255,.20)'; ctx.lineWidth=1.4;
+    ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.stroke();
+    ctx.strokeStyle='rgba(255,255,255,.11)'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.ellipse(cx,cy,r,r*.34,0,0,Math.PI*2); ctx.stroke();
 
-        function flyToLocation(lat, lng) {
-            map.flyTo([lat, lng], 10, { animate: true, duration: 1.5 });
-            if (window.innerWidth < 768) toggleSidebar();
-        }
+    function drawAxis(vx,vy,vz,label, labelDx=0, labelDy=0){
+      const p1 = project(-vx,-vy,-vz);
+      const p2 = project(vx,vy,vz);
+      ctx.strokeStyle='rgba(255,255,255,.17)'; ctx.setLineDash([3,4]);
+      ctx.beginPath(); ctx.moveTo(p1.px,p1.py); ctx.lineTo(p2.px,p2.py); ctx.stroke(); ctx.setLineDash([]);
+      ctx.fillStyle='rgba(255,255,255,.50)'; ctx.font='700 9px IBM Plex Mono, monospace'; ctx.textAlign='center';
+      ctx.fillText(label, p2.px + labelDx, p2.py + labelDy);
+    }
+    drawAxis(1,0,0,'X',10,3);
+    drawAxis(0,1,0,'Y',10,-2);
+    drawAxis(0,0,1,'Z',0,-7);
 
-        // --- Sidebar Logic ---
-        const menuBtn = document.getElementById('menuBtn');
-        const closeSidebar = document.getElementById('closeSidebar');
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('sidebarOverlay');
-        let isSidebarOpen = false;
+    ctx.fillStyle='#fff'; ctx.font='700 10px IBM Plex Mono, monospace'; ctx.textAlign='center';
+    ctx.fillText('|0⟩',cx,cy-r-14); ctx.fillText('|1⟩',cx,cy+r+17);
 
-        function toggleSidebar() {
-            isSidebarOpen = !isSidebarOpen;
-            if (isSidebarOpen) {
-                sidebar.classList.remove('-translate-x-full');
-                overlay.classList.remove('hidden');
-            } else {
-                sidebar.classList.add('-translate-x-full');
-                overlay.classList.add('hidden');
-            }
-        }
+    if(rLen > EPS){
+      const unit = project(x/rLen, y/rLen, z/rLen);
+      ctx.fillStyle = 'rgba(255,255,255,.18)';
+      ctx.beginPath(); ctx.arc(unit.px, unit.py, 3, 0, Math.PI*2); ctx.fill();
+    }
 
-        menuBtn.addEventListener('click', toggleSidebar);
-        closeSidebar.addEventListener('click', toggleSidebar);
-        overlay.addEventListener('click', toggleSidebar);
+    const p = project(x,y,z);
+    ctx.fillStyle='rgba(255,255,255,.20)'; ctx.beginPath(); ctx.arc(cx,cy,2.2,0,Math.PI*2); ctx.fill();
+    ctx.strokeStyle = `${qColors[q]}dd`; ctx.lineWidth=3;
+    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(p.px,p.py); ctx.stroke();
 
-        // --- Gemini Integration ---
+    const glow = ctx.createRadialGradient(p.px,p.py,0,p.px,p.py,18);
+    glow.addColorStop(0,`${qColors[q]}90`); glow.addColorStop(.55,`${qColors[q]}28`); glow.addColorStop(1,'transparent');
+    ctx.fillStyle=glow; ctx.beginPath(); ctx.arc(p.px,p.py,18,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle=qColorsBright[q]; ctx.beginPath(); ctx.arc(p.px,p.py,7,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(p.px,p.py,3,0,Math.PI*2); ctx.fill();
 
-        const aiPanel = document.getElementById('ai-panel');
-        const aiContent = document.getElementById('ai-content');
-        const aiLoading = document.getElementById('ai-loading');
+    ctx.fillStyle=qColorsBright[q]; ctx.font='700 10px IBM Plex Mono, monospace'; ctx.textAlign='center';
+    ctx.fillText(`r = ${fmt(rLen)}`,cx,h-8);
 
-        function openAiPanel() {
-            aiPanel.classList.remove('translate-y-full');
-            aiPanel.classList.remove('hidden');
-            if (!isSidebarOpen && window.innerWidth < 768) {
-                toggleSidebar();
-            }
-        }
-
-        function closeAiPanel() {
-            aiPanel.classList.add('translate-y-full');
-            setTimeout(() => aiPanel.classList.add('hidden'), 300);
-        }
-
-        async function askGemini(targetName) {
-            openAiPanel();
-            aiContent.innerHTML = '';
-            aiLoading.classList.remove('hidden');
-            aiLoading.classList.add('flex');
-
-            const systemPrompt = `You are a startup business consultant specializing in the Mongolian mining sector. 
-            Analyze the market opportunity for "${targetName}".
-            1. **The Need:** What does this entity likely need from a tech startup? (e.g., logistics software, safety apps, environmental monitoring).
-            2. **The Pain Points:** What are their known challenges? (e.g., remote location, dust, turnover).
-            3. **The Pitch:** How should a startup approach them?
-            Use Markdown formatting. Be specific.`;
-            
-            const userQuery = `Analyze tech opportunities for ${targetName}.`;
-
-            try {
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: userQuery }] }],
-                        systemInstruction: { parts: [{ text: systemPrompt }] }
-                    })
-                });
-
-                if (!response.ok) throw new Error('API Request Failed');
-                
-                const data = await response.json();
-                const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "No information available.";
-                
-                aiContent.innerHTML = marked.parse(text);
-
-            } catch (error) {
-                console.error(error);
-                aiContent.innerHTML = `<div class="p-4 bg-red-50 text-red-600 rounded">
-                    <i class="fas fa-exclamation-circle mr-2"></i>
-                    Sorry, I couldn't fetch the AI analysis at this moment. Please try again later.
-                </div>`;
-            } finally {
-                aiLoading.classList.add('hidden');
-                aiLoading.classList.remove('flex');
-            }
-        }
-
-    </script>
+    const stats = document.getElementById(`blochStats${q}`);
+    if(stats){
+      stats.innerHTML = `<span>X ${fmt(x)}</span><span>Y ${fmt(y)}</span><span>Z ${fmt(z)}</span><span>r ${fmt(rLen)}</span>`;
+    }
+  }
+}
+syncSelectors(); updateToffoliHint(); render();
+</script>
 </body>
 </html>
