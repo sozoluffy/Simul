@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="mn">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>3-Qubit Quantum Computer — World Quantum Day 2026</title>
+<title>3 кубитын квант компьютер — World Quantum Day 2026</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=Inter:wght@400;500;600;700;800&display=swap');
   *{margin:0;padding:0;box-sizing:border-box}
@@ -59,28 +59,50 @@
   .log{max-height:116px;overflow-y:auto;font-family:var(--mono);font-size:.64rem;color:var(--dim);padding:10px;background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.045);border-radius:12px}.log div{padding:2px 0}.op{color:#c4b5fd}.meas{color:#fde68a}.resetText{color:#fecdd3}
   .bloch-row{display:flex;gap:13px;justify-content:center;flex-wrap:wrap}.bloch-container{text-align:center}.bloch-label{font-family:var(--mono);font-size:.75rem;font-weight:800;margin-bottom:6px}.bloch-canvas{background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.08);border-radius:16px}.bloch-stats{margin-top:6px;font-family:var(--mono);font-size:.58rem;line-height:1.45;color:var(--muted);display:grid;grid-template-columns:repeat(4,1fr);gap:4px}.bloch-stats span{background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.055);border-radius:7px;padding:3px 4px}.bloch-note{font-size:.68rem;color:var(--dim);margin-top:6px;line-height:1.4}
   .explain{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}@media(max-width:720px){.explain{grid-template-columns:1fr}}.mini{background:rgba(255,255,255,.035);border:1px solid var(--border);border-radius:14px;padding:12px}.mini b{display:block;font-size:.76rem;margin-bottom:4px}.mini span{font-size:.72rem;color:var(--muted);line-height:1.45}
+
+  .header-actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:16px}
+  .primary-link,.secondary-link{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;font-family:var(--mono);font-size:.72rem;font-weight:800;border-radius:999px;padding:10px 15px;border:1px solid var(--border);transition:transform .15s,border-color .15s,background .15s;color:#fff}
+  .primary-link{background:linear-gradient(90deg,rgba(139,92,246,.9),rgba(34,211,238,.75));border-color:rgba(255,255,255,.18);box-shadow:0 14px 40px rgba(34,211,238,.10)}
+  .secondary-link{background:rgba(255,255,255,.04);color:var(--muted)}
+  .primary-link:hover,.secondary-link:hover{transform:translateY(-1px);border-color:rgba(255,255,255,.32)}
+  .mission-card{position:relative;overflow:hidden;background:linear-gradient(135deg,rgba(139,92,246,.18),rgba(34,211,238,.10),rgba(255,255,255,.035));border-color:rgba(103,232,249,.22)}
+  .mission-card::before{content:'';position:absolute;inset:-80px auto auto -80px;width:180px;height:180px;border-radius:50%;background:rgba(34,211,238,.16);filter:blur(22px)}
+  .mission-content{position:relative;z-index:1}
+  .mission-kicker{font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:#67e8f9;font-weight:800;margin-bottom:8px}
+  .mission-title{font-size:1.25rem;letter-spacing:-.03em;line-height:1.15;margin-bottom:8px}
+  .mission-text{font-size:.82rem;color:var(--muted);line-height:1.55;margin-bottom:12px}
+  .mission-actions{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
+  .mission-btn{display:inline-flex;text-decoration:none;font-family:var(--mono);font-size:.72rem;font-weight:800;color:#061018;background:#67e8f9;border-radius:999px;padding:10px 14px;border:1px solid rgba(255,255,255,.25)}
+  .mission-btn:hover{transform:translateY(-1px)}
+  .challenge-status{font-family:var(--mono);font-size:.68rem;color:var(--muted);background:rgba(0,0,0,.22);border:1px solid rgba(255,255,255,.08);border-radius:999px;padding:8px 10px}
+  .challenge-status.unlocked{color:#bbf7d0;border-color:rgba(74,222,128,.35);background:rgba(74,222,128,.10)}
+
 </style>
 </head>
 <body>
 <div class="app">
   <header>
     <div class="badge"><span class="pulse"></span>World Quantum Day 2026</div>
-    <h1>3-Qubit Quantum Computer</h1>
-    <p>Build a small circuit, watch the full state vector evolve, and see each qubit’s reduced Bloch vector. Measurement collapses the current quantum state.</p>
+    <h1>3 кубитын квант компьютер</h1>
+    <p>Жижиг квант хэлхээ угсраад, төлөвийн вектор хэрхэн өөрчлөгдөхийг харж, кубит бүрийн Bloch векторыг ажиглаарай. Хэмжилт хийхэд квант төлөв collapse буюу нэг үр дүнд нурна.</p>
+    <div class="header-actions">
+      <a class="primary-link" href="https://www.uih.mn/petition/view/401" target="_blank" rel="noopener">AI ашиглах эрхийг дэмжих</a>
+      <a class="secondary-link" href="#mission">Квант даалгавар ↓</a>
+    </div>
   </header>
 
   <div class="qubits">
-    <div class="qubit-chip"><span class="dot q0"></span>q0 = most significant bit</div>
+    <div class="qubit-chip"><span class="dot q0"></span>q0 = хамгийн зүүн талын бит</div>
     <div class="qubit-chip"><span class="dot q1"></span>q1</div>
-    <div class="qubit-chip"><span class="dot q2"></span>q2 = least significant bit</div>
+    <div class="qubit-chip"><span class="dot q2"></span>q2 = хамгийн баруун талын бит</div>
   </div>
 
   <div class="layout">
     <div class="stack">
       <div class="card">
-        <h2>Apply Gates</h2>
+        <h2>Квант үйлдлүүд турших</h2>
         <div class="gate-section">
-          <div class="label">Single-qubit target</div>
+          <div class="label">Нэг кубитын бай</div>
           <div class="gate-row" id="singleTargetButtons">
             <button class="active" onclick="setSingleTarget(0)">q0</button>
             <button onclick="setSingleTarget(1)">q1</button>
@@ -88,20 +110,20 @@
           </div>
         </div>
         <div class="gate-section">
-          <div class="label">Single-qubit gates</div>
+          <div class="label">Нэг кубитын квант үйлдлүүд</div>
           <div class="gate-row">
-            <button onclick="applyGate('H')" title="Hadamard: creates superposition">H</button>
-            <button onclick="applyGate('X')" title="Pauli-X: bit flip">X</button>
-            <button onclick="applyGate('Y')" title="Pauli-Y: bit + phase flip">Y</button>
-            <button onclick="applyGate('Z')" title="Pauli-Z: phase flip">Z</button>
-            <button onclick="applyGate('S')" title="S gate: π/2 phase">S</button>
-            <button onclick="applyGate('T')" title="T gate: π/4 phase">T</button>
+            <button onclick="applyGate('H')" title="Hadamard: superposition үүсгэнэ">H</button>
+            <button onclick="applyGate('X')" title="Pauli-X: бит эргүүлнэ">X</button>
+            <button onclick="applyGate('Y')" title="Pauli-Y: бит ба фаз эргүүлнэ">Y</button>
+            <button onclick="applyGate('Z')" title="Pauli-Z: фаз эргүүлнэ">Z</button>
+            <button onclick="applyGate('S')" title="S хаалга: π/2 фаз">S</button>
+            <button onclick="applyGate('T')" title="T хаалга: π/4 фаз">T</button>
           </div>
         </div>
 
         <div class="subgrid">
           <div class="gate-section">
-            <div class="label">CNOT: control → target</div>
+            <div class="label">CNOT: удирдагч → бай</div>
             <div class="pair">
               <select class="select" id="cnotControl" onchange="syncSelectors()"><option value="0">q0</option><option value="1">q1</option><option value="2">q2</option></select>
               <span class="arrow">→</span>
@@ -110,7 +132,7 @@
             </div>
           </div>
           <div class="gate-section">
-            <div class="label">SWAP: exchange two qubits</div>
+            <div class="label">SWAP: хоёр кубитын байрыг солих</div>
             <div class="pair">
               <select class="select" id="swapA" onchange="syncSelectors()"><option value="0">q0</option><option value="1">q1</option><option value="2">q2</option></select>
               <span class="arrow">↔</span>
@@ -121,37 +143,49 @@
         </div>
 
         <div class="gate-section">
-          <div class="label">Toffoli: two controls → selected target</div>
+          <div class="label">Toffoli: хоёр удирдагч → сонгосон бай</div>
           <div class="pair">
-            <span class="hint" id="toffoliHint" style="margin:0">controls q1, q2 → target q0</span>
+            <span class="hint" id="toffoliHint" style="margin:0">удирдагч q1, q2 → бай q0</span>
             <button onclick="applyToffoli()">Toffoli</button>
           </div>
         </div>
 
         <div class="gate-section">
-          <div class="label">Measurement and reset</div>
+          <div class="label">Хэмжилт ба reset</div>
           <div class="gate-row">
-            <button class="measure" onclick="measureAll()">Measure all</button>
-            <button class="measure" onclick="measureOne()">Measure q<span id="measTarget">0</span></button>
-            <button class="reset" onclick="resetState(true)">Reset |000⟩</button>
+            <button class="measure" onclick="measureAll()">Бүгдийг хэмжих</button>
+            <button class="measure" onclick="measureOne()">q<span id="measTarget">0</span>-г хэмжих</button>
+            <button class="reset" onclick="resetState(true)">|000⟩ рүү буцаах</button>
           </div>
-          <div class="hint"><strong>Note:</strong> The state uses basis order |q0 q1 q2⟩, so |101⟩ means q0=1, q1=0, q2=1. Press Measure repeatedly to run fresh shots of the same unitary circuit.</div>
+          <div class="hint"><strong>Тайлбар:</strong> Төлөвийн дараалал |q0 q1 q2⟩. Жишээ нь |101⟩ гэдэг нь q0=1, q1=0, q2=1 гэсэн үг. “Хэмжих” товчийг дахин дарахад ижил хэлхээг шинээр ажиллуулж, шинэ shot авна.</div>
         </div>
       </div>
 
       <div class="card">
-        <h2>Presets</h2>
+        <h2>Бэлэн жишээнүүд</h2>
         <div class="preset-row">
-          <button onclick="presetBell()">Bell pair q0–q1</button>
-          <button onclick="presetGHZ()">GHZ state</button>
-          <button onclick="presetPhase()">Phase demo</button>
+          <button onclick="presetBell()">Bell хос q0–q1</button>
+          <button onclick="presetGHZ()">GHZ төлөв</button>
+          <button onclick="presetPhase()">Фазын demo</button>
+        </div>
+      </div>
+
+      <div class="card mission-card" id="mission">
+        <div class="mission-content">
+          <div class="mission-kicker">Квант даалгавар 01</div>
+          <div class="mission-title">Superposition үүсгэ. Дараа нь AI-тай суралцах эрхийг дэмж.</div>
+          <div class="mission-text">Даалгавар: <strong>q0</strong> дээр <strong>H</strong> квант хаалга буюу үйлдэгч хэрэглэ. Симулятор 50% |000⟩ ба 50% |100⟩ гэж харуулбал та анхны квант superposition-оо үүсгэлээ гэсэн үг. Гол санаа нь энэ: оюутнууд тоглож, асууж, код бичиж, ухаалаг AI хэрэгслээр суралцах боломжтой бол ямар ч хэцүү шинжлэх ухаан ойлгомжтой, хялбархан болдог.</div>
+          <div class="mission-actions">
+            <a class="mission-btn" href="https://www.uih.mn/petition/view/401" target="_blank" rel="noopener">Өргөдөлд нэгдэх</a>
+            <span class="challenge-status" id="missionStatus">Нээгдээгүй: q0 дээр H дар</span>
+          </div>
         </div>
       </div>
 
       <div class="card">
-        <h2>Circuit</h2>
+        <h2>Квант хэлхээ</h2>
         <div class="circuit-wrap">
-          <div class="circuit-placeholder" id="circuitPlaceholder">Apply gates to build your circuit</div>
+          <div class="circuit-placeholder" id="circuitPlaceholder">Хаалгууд хэрэглэж хэлхээгээ угсар</div>
           <div class="circuit" id="circuit">
             <div class="wire"><div class="wire-label" style="color:var(--q0)">q0</div><div class="wire-line" id="wire0"></div></div>
             <div class="wire"><div class="wire-label" style="color:var(--q1)">q1</div><div class="wire-line" id="wire1"></div></div>
@@ -164,26 +198,26 @@
 
     <div class="stack">
       <div class="card">
-        <h2>State Vector |ψ⟩</h2>
+        <h2>Төлөвийн вектор |ψ⟩</h2>
         <div class="state-vector" id="stateVector"></div>
       </div>
 
       <div class="card">
-        <h2>Bloch Spheres: reduced one-qubit states</h2>
+        <h2>Bloch бөмбөрцөг: нэг кубитын reduced төлөв</h2>
         <div class="bloch-row">
           <div class="bloch-container"><div class="bloch-label" style="color:var(--q0)">q0</div><canvas class="bloch-canvas" id="bloch0" width="190" height="190"></canvas><div class="bloch-stats" id="blochStats0"></div></div>
           <div class="bloch-container"><div class="bloch-label" style="color:var(--q1)">q1</div><canvas class="bloch-canvas" id="bloch1" width="190" height="190"></canvas><div class="bloch-stats" id="blochStats1"></div></div>
           <div class="bloch-container"><div class="bloch-label" style="color:var(--q2)">q2</div><canvas class="bloch-canvas" id="bloch2" width="190" height="190"></canvas><div class="bloch-stats" id="blochStats2"></div></div>
         </div>
-        <div class="hint">The numeric chips show the real Bloch vector ⟨X⟩, ⟨Y⟩, ⟨Z⟩ and length r. The sphere is a 2D perspective projection, so Y-depth can look visually shorter even when r=1.</div>
+        <div class="hint">Доорх тоонууд нь жинхэнэ Bloch векторын ⟨X⟩, ⟨Y⟩, ⟨Z⟩ ба урт r-г харуулна. Бөмбөрцөг нь 2D проекц тул Y чиглэл гүн рүү орж харагдаж, r=1 байсан ч богино мэт санагдаж болно.</div>
       </div>
 
       <div class="card">
-        <h2>What to notice</h2>
+        <h2>Юуг анзаарах вэ?</h2>
         <div class="explain">
-          <div class="mini"><b>Superposition</b><span>H spreads amplitude across basis states. Probabilities are squared magnitudes of amplitudes.</span></div>
-          <div class="mini"><b>Phase</b><span>Z, S, and T can change phase without changing probabilities until later gates interfere.</span></div>
-          <div class="mini"><b>Entanglement</b><span>Bell/GHZ states make individual Bloch vectors mixed: r drops below 1.</span></div>
+          <div class="mini"><b>Superposition</b><span>H хаалга амплитудыг хэд хэдэн basis төлөв дээр тараана. Магадлал = амплитудын квадрат хэмжээ.</span></div>
+          <div class="mini"><b>Фаз</b><span>Z, S, T хаалгууд магадлалыг шууд өөрчлөхгүйгээр фазыг өөрчилдөг. Дараагийн хаалгууд interference үүсгэхэд нөлөө нь харагдана.</span></div>
+          <div class="mini"><b>Орооцолдол</b><span>Bell/GHZ төлөвүүдэд тус бүрийн кубит mixed төлөв болж, Bloch векторын урт r 1-ээс багасна.</span></div>
         </div>
       </div>
     </div>
@@ -304,7 +338,7 @@ function syncSelectors(){
 }
 function updateToffoliHint(){
   const controls = [0,1,2].filter(q=>q!==singleTarget);
-  document.getElementById('toffoliHint').textContent = `controls ${qName(controls[0])}, ${qName(controls[1])} → target ${qName(singleTarget)}`;
+  document.getElementById('toffoliHint').textContent = `удирдагч ${qName(controls[0])}, ${qName(controls[1])} → бай ${qName(singleTarget)}`;
 }
 
 function applyGate(gate){
@@ -355,7 +389,7 @@ function measureAll(){
   state = Array.from({length:DIM}, (_,i)=> i===result ? {re:1,im:0} : {re:0,im:0});
   const bits = result.toString(2).padStart(N,'0');
   circuitOps.push({type:'measure_all', result:bits});
-  addLog(`<span class="meas">MEASURE ALL → |${bits}⟩</span>`);
+  addLog(`<span class="meas">БҮГДИЙГ ХЭМЖИХ → |${bits}⟩</span>`);
   render();
 }
 function measureOne(){
@@ -373,20 +407,20 @@ function measureOne(){
     state[i] = bit === result ? {re:state[i].re/norm, im:state[i].im/norm} : {re:0, im:0};
   }
   circuitOps.push({type:'measure_one', qubit:q, result});
-  addLog(`<span class="meas">MEASURE ${qName(q)} → |${result}⟩</span>`);
+  addLog(`<span class="meas">${qName(q)} ХЭМЖИХ → |${result}⟩</span>`);
   render();
 }
 function resetState(withLog=false){
   initState(); circuitOps = [];
   document.getElementById('log').innerHTML = '';
-  if(withLog) addLog('<span class="resetText">Reset to |000⟩</span>');
+  if(withLog) addLog('<span class="resetText">|000⟩ рүү буцаав</span>');
   render();
 }
 function resetForPreset(name){
-  initState(); circuitOps = []; document.getElementById('log').innerHTML = ''; addLog(`<span class="resetText">Preset: ${name}</span>`);
+  initState(); circuitOps = []; document.getElementById('log').innerHTML = ''; addLog(`<span class="resetText">Бэлэн жишээ: ${name}</span>`);
 }
 function presetBell(){
-  resetForPreset('Bell pair q0–q1');
+  resetForPreset('Bell хос q0–q1');
   applySingleGateRaw('H',0); circuitOps.push({type:'single',gate:'H',qubit:0});
   applyCNOTRaw(0,1); circuitOps.push({type:'cnot',control:0,target:1});
   addLog(`<span class="op">H q0; CNOT q0 → q1</span>`);
@@ -401,12 +435,27 @@ function presetGHZ(){
   renormalize(); render();
 }
 function presetPhase(){
-  resetForPreset('Phase demo');
+  resetForPreset('Фазын demo');
   applySingleGateRaw('H',0); circuitOps.push({type:'single',gate:'H',qubit:0});
   applySingleGateRaw('T',0); circuitOps.push({type:'single',gate:'T',qubit:0});
   applySingleGateRaw('H',0); circuitOps.push({type:'single',gate:'H',qubit:0});
   addLog(`<span class="op">H q0; T q0; H q0</span>`);
   renormalize(); render();
+}
+
+
+function updateMissionStatus(){
+  const el = document.getElementById('missionStatus');
+  if(!el) return;
+  const probs = probabilities();
+  const unlocked = Math.abs(probs[0] - 0.5) < 0.015 && Math.abs(probs[4] - 0.5) < 0.015 && probs.every((p,i)=> (i===0 || i===4) ? true : p < 0.015);
+  if(unlocked){
+    el.textContent = 'Нээгдлээ: superposition үүссэн ⚛️';
+    el.classList.add('unlocked');
+  } else {
+    el.textContent = 'Нээгдээгүй: q0 дээр H дар';
+    el.classList.remove('unlocked');
+  }
 }
 
 function addLog(msg){
@@ -425,7 +474,7 @@ function formatComplex(a){
   return `${rs}${im<0?'-':'+'}${is}i`;
 }
 
-function render(){renderStateVector(); renderCircuit(); renderBloch();}
+function render(){renderStateVector(); renderCircuit(); renderBloch(); updateMissionStatus();}
 function renderStateVector(){
   const container = document.getElementById('stateVector');
   const probs = probabilities();
